@@ -58,7 +58,37 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
+  const findSound = key => document.querySelector(`audio[data-key="${key}"]`);
+  const findButton = key => document.querySelector(`.keys [data-key="${key}"]`);
+  const findKeyRoot = leaf => leaf.closest(`[data-key]`);
+  const keyContainer = document.querySelector(".keys");
 
+  const playSound = (audio, onStart, onStop) => {
+    audio.onplaying = onStart;
+    audio.onended = onStop;
+    audio.play();
+  };
+
+  const handlePlaying = (el, sound) => {
+    const onPlaying = () => el.classList.add("playing");
+    const onEnded = () => el.classList.remove("playing");
+    playSound(sound, onPlaying, onEnded);
+  };
+
+  document.addEventListener("keydown", ({ keyCode }) => {
+    const el = findButton(keyCode);
+    if (!el) return;
+    const sound = findSound(keyCode);
+    handlePlaying(el, sound);
+  });
+
+  keyContainer.addEventListener("click", ({ target }) => {
+    const el = findKeyRoot(target);
+    if (!el) return;
+    const key = el.dataset.key;
+    const sound = findSound(key);
+    handlePlaying(el, sound);
+  });
 </script>
 
 
