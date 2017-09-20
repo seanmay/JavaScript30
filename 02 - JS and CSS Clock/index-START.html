@@ -10,8 +10,8 @@
     <div class="clock">
       <div class="clock-face">
         <div class="hand hour-hand"></div>
-        <div class="hand min-hand"></div>
-        <div class="hand second-hand"></div>
+        <div class="hand minute-hand"></div>
+        <div class="hand second-hand" style="transform: rotate(45deg)"></div>
       </div>
     </div>
 
@@ -62,12 +62,46 @@
       background:black;
       position: absolute;
       top:50%;
+      transform-origin: 100%;
+      transform: rotate(90deg);
     }
 
   </style>
 
   <script>
+    const calculateRotation = fraction =>
+      360 * fraction;
 
+    const fractionalRotation = denominator => numerator =>
+      calculateRotation(numerator / denominator);
+
+    const hoursRotation = fractionalRotation(24);
+    const minutesRotation = fractionalRotation(60);
+    const secondsRotation = fractionalRotation(60);
+
+    const hourHand = document.querySelector(".hour-hand");
+    const minuteHand = document.querySelector(".minute-hand");
+    const secondHand = document.querySelector(".second-hand");
+
+    const updateHand = (el, deg) => {
+      el.style.transform = `rotate(${deg}deg)`;
+    };
+
+    const tick = () => {
+      const time = new Date();
+      const hours = hoursRotation(time.getHours());
+      const minutes = minutesRotation(time.getMinutes());
+      const seconds = secondsRotation(time.getSeconds());
+
+      const offset = 90;
+
+      updateHand(hourHand, hours + offset);
+      updateHand(minuteHand, minutes + offset);
+      updateHand(secondHand, seconds + offset);
+    };
+
+    tick();
+    setInterval(tick, 100);
 
   </script>
 </body>
