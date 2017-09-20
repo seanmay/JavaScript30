@@ -31,29 +31,74 @@
 
     // Array.prototype.filter()
     // 1. Filter the list of inventors for those who were born in the 1500's
+    const inventors1500s = inventors.filter(({ year }) => year >= 1500 && year < 1600);
 
     // Array.prototype.map()
     // 2. Give us an array of the inventors' first and last names
+    const inventorsNames = inventors.map(({ first, last }) => `${first} ${last}`);
 
     // Array.prototype.sort()
     // 3. Sort the inventors by birthdate, oldest to youngest
+    const gt = (a, b) => a > b;
+    const lt = (a, b) => a < b;
+    const compare = test => (a, b) =>
+      test(a, b)
+        ? -1
+        : test(b, a)
+          ? 1
+          : 0;
+
+    const sortLT = compare(lt);
+    const sortGT = compare(gt);
+
+
+    const inventorsByBirthYear = inventors.slice().sort((a, b) => sortLT(a.year, b.year));
+
+    console.log("\n// 3. Sort the inventors by birthdate, oldest to youngest");
+    console.log(inventorsByBirthYear);
 
     // Array.prototype.reduce()
     // 4. How many years did all the inventors live?
+    const livedYears = inventors
+      .map(({ year, passed }) => passed - year)
+      .reduce((a, b) => a + b, 0);
 
     // 5. Sort the inventors by years lived
+    const inventorsByLifespan = inventors
+      .map(inventor => ({ ...inventor, lifespan: inventor.passed - inventor.year }))
+      .sort(({ lifespan: a }, { lifespan: b }) => sortGT(a, b));
+
+    console.log("\n// 5. Sort the inventors by years lived");
+    console.log(inventorsByLifespan);
+
 
     // 6. create a list of Boulevards in Paris that contain 'de' anywhere in the name
     // https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris
-
+    console.log(`\n// 6. create a list of Boulevards in Paris that contain 'de' anywhere in the name
+`);
+    console.log("HARD PASS. Really not resolving CORS issues to build a file:/// based scraper to get a wikipedia page, to pull the content in, to scrape it");
 
     // 7. sort Exercise
     // Sort the people alphabetically by last name
+
+    const orderedPeople = people.slice().sort((pA, pB) => {
+      const [aLast, aFirst] = pA.split(", ");
+      const [bLast, bFirst] = pB.split(", ");
+
+      return sortLT(aLast, bLast) || sortLT(aFirst, bFirst);
+    });
+
+    console.log("\n// 7. Sort the people alphabetically by last name");
+    console.log(orderedPeople);
 
     // 8. Reduce Exercise
     // Sum up the instances of each of these
     const data = ['car', 'car', 'truck', 'truck', 'bike', 'walk', 'car', 'van', 'bike', 'walk', 'car', 'van', 'car', 'truck' ];
 
+    const frequency = data.reduce((keys, key) => {
+      const count = keys[key] || 0;
+      return { ...keys, [key]: count + 1 };
+    }, {});
   </script>
 </body>
 </html>
