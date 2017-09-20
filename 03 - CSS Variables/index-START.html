@@ -9,19 +9,33 @@
 
   <div class="controls">
     <label for="spacing">Spacing:</label>
-    <input id="spacing" type="range" name="spacing" min="10" max="200" value="10" data-sizing="px">
+    <input id="spacing" type="range" name="padding-width" min="10" max="200" value="10" data-units="px">
 
     <label for="blur">Blur:</label>
-    <input id="blur" type="range" name="blur" min="0" max="25" value="10" data-sizing="px">
+    <input id="blur" type="range" name="element-blur" min="0" max="25" value="10" data-units="px">
 
     <label for="base">Base Color</label>
-    <input id="base" type="color" name="base" value="#ffc600">
+    <input id="base" type="color" name="base-color" value="#ffc600">
   </div>
 
   <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
 
   <style>
+    :root {
+      --base-color: #ffc600;
+      --padding-width: 10px;
+      --element-blur: 10px;
+    }
 
+    .hl {
+      color: var(--base-color);
+    }
+
+    img {
+      padding: var(--padding-width);
+      background: var(--base-color);
+      filter: blur(var(--element-blur));
+    }
     /*
       misc styles, nothing to do with CSS variables
     */
@@ -45,6 +59,20 @@
   </style>
 
   <script>
+    const root = document.documentElement;
+    const inputs = [...document.querySelectorAll("input")];
+
+    const updateCSSValue = (el, key, value) =>
+      el.style.setProperty(key, value);
+
+    const update = () => {
+      inputs
+        .map(input => [input.name, input.value, input.dataset.units || ""])
+        .map(([name, value, units]) => [`--${name}`, `${value}${units}`])
+        .forEach(([key, value]) => updateCSSValue(root, key, value));
+    };
+
+    inputs.forEach(input => input.addEventListener("input", update));
   </script>
 
 </body>
